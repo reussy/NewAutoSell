@@ -1,0 +1,10 @@
+name: AutoSell
+authors:
+  - Pijok
+  - FezMLG
+version: 1.0.0
+main: pl.pijok.autosell
+description: Allow players to automaticly sell mined blocks.
+softdepend:
+  - WorldGuard
+  - Vault
