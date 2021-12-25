@@ -1,3 +1,17 @@
+#Which component should be more used
+componentUsage: RAM
+#Should player data be saved in database or yaml file
+database: true
+#Database settings
+sqlSettings:
+  user: user
+  password: passwrd
+  host: localhost
+  port: 3306
+  database: sampleDatabase
+#Should players be able to enable auto sell function
 autoSellEnabled: true
+#Should server count amount of blocks mined by players
 countingBlocksEnabled: true
+#Should players be able to use sell all function
 sellAllEnabled: true

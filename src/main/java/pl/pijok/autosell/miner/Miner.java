@@ -25,4 +25,12 @@ public class Miner {
     public void setAutoSell(boolean autoSell) {
         this.autoSell = autoSell;
     }
+
+    public void increasedMinedBlocks(long amount){
+        this.minedBlocks += amount;
+    }
+
+    public void decreaseMinedBlocks(long amount){
+        this.minedBlocks -= amount;
+    }
 }

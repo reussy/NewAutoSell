@@ -3,7 +3,7 @@ package pl.pijok.autosell.essentials;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import pl.pijok.autosell.Lang;
+import pl.pijok.autosell.settings.Lang;
 
 public class ChatUtils {
 
@@ -39,7 +39,7 @@ public class ChatUtils {
      * @param message Message to send
      */
     public static void sendMessage(Player player, String message){
-        player.sendMessage(fixColor(Lang.getText("prefix") + message));
+        player.sendMessage(fixColor(Lang.getText("PREFIX") + message));
     }
 
     /**
@@ -48,7 +48,7 @@ public class ChatUtils {
      * @param message Message to send
      */
     public static void sendMessage(CommandSender player, String message){
-        player.sendMessage(fixColor(Lang.getText("prefix") + message));
+        player.sendMessage(fixColor(Lang.getText("PREFIX") + message));
     }
 
 

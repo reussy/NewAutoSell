@@ -1,4 +1,4 @@
-package pl.pijok.autosell;
+package pl.pijok.autosell.settings;
 
 import java.util.HashMap;
 
