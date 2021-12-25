@@ -1,0 +1,24 @@
+#Values of blocks used in selling
+blocks:
+  COBBLESTONE: 0.05
+  STONE: 0.5
+  COAL: 1.0
+  COAL_ORE: 1.2
+  IRON_ORE: 5.0
+  GOLD_ORE: 10.0
+  EMERALD: 25.0
+  DIAMOND: 50.0
+
+
+#Multipliers used in selling blocks
+#Remember to write them in order from highest to lowest
+multipliers:
+  bigmultiplier:
+    permission: "autosell.multiplier.big"
+    multiplier: 5.0
+  mediummultiplier:
+    permission: "autosell.multiplier.medium"
+    multiplier: 3.0
+  smallmultuplier:
+    permission: "autosell.multiplier.small"
+    multiplier: 1.5

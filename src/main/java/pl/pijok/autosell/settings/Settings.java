@@ -1,16 +1,29 @@
 package pl.pijok.autosell.settings;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import pl.pijok.autosell.essentials.ConfigUtils;
+import pl.pijok.autosell.essentials.Debug;
+import pl.pijok.autosell.essentials.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Settings {
 
+    //Saving settings
     private static boolean databaseUsage;
     private static SqlSettings sqlSettings;
     private static String componentUsage;
-    private static boolean autoSellEnabled;
+
+    //Counting blocks settings
     private static boolean countBlocks;
+    private static boolean countOnlyOnMiningTools;
+    private static List<Material> miningTools;
+
+    //Selling settings
     private static boolean sellAllEnabled;
+    private static boolean autoSellEnabled;
 
     public static void load(){
 
@@ -29,6 +42,16 @@ public class Settings {
         componentUsage = configuration.getString("componentUsage");
         autoSellEnabled = configuration.getBoolean("autoSellEnabled");
         countBlocks = configuration.getBoolean("countingBlocksEnabled");
+        countOnlyOnMiningTools = configuration.getBoolean("countOnlyOnMiningTools");
+        miningTools = new ArrayList<>();
+        for(String materialName : configuration.getStringList("miningTools")){
+            if(!Utils.isMaterial(materialName)){
+                Debug.log("&cWrong material name in config.yml -> miningTools section");
+                continue;
+            }
+
+            miningTools.add(Material.valueOf(materialName));
+        }
         sellAllEnabled = configuration.getBoolean("sellAllEnabled");
 
     }
@@ -79,5 +102,21 @@ public class Settings {
 
     public static void setSqlSettings(SqlSettings sqlSettings) {
         Settings.sqlSettings = sqlSettings;
+    }
+
+    public static boolean isCountOnlyOnMiningTools() {
+        return countOnlyOnMiningTools;
+    }
+
+    public static void setCountOnlyOnMiningTools(boolean countOnlyOnMiningTools) {
+        Settings.countOnlyOnMiningTools = countOnlyOnMiningTools;
+    }
+
+    public static List<Material> getMiningTools() {
+        return miningTools;
+    }
+
+    public static void setMiningTools(List<Material> miningTools) {
+        Settings.miningTools = miningTools;
     }
 }
