@@ -1,1 +1,7 @@
-PREFIX: "&7[&cAutoSell&7] &r"
+lang:
+  PREFIX: "&7[&cAutoSell&7] &r"
+  PERMISSION_DENIED: "&cYou don't have permission to use this command!"
+  NOTHING_TO_SELL: "&cYou don't have items to sell!"
+  SOLD_INVENTORY: "&aSold all items from inventory for &e%value%&a$"
+  AUTOSELL_ON: "&aTurned on autosell!"
+  AUTOSELL_OFF: "&cTurned off autosell!"

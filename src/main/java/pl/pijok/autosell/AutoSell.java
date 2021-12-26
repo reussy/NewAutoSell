@@ -13,7 +13,6 @@ public class AutoSell extends JavaPlugin {
     private static AutoSell instance;
     private static Economy economy;
 
-
     @Override
     public void onEnable() {
 
@@ -58,8 +57,10 @@ public class AutoSell extends JavaPlugin {
             Settings.load();
             Lang.load();
 
-            if(Settings.getComponentUsage().equalsIgnoreCase("RAM")){
-                Controllers.getMinersController().loadAllMinersData();
+            if(!reload){
+                if(Settings.getComponentUsage().equalsIgnoreCase("RAM")){
+                    Controllers.getMinersController().loadAllMinersData();
+                }
             }
 
             Controllers.getSellingController().loadSettings();

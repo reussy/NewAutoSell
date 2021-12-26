@@ -5,9 +5,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import pl.pijok.autosell.AutoSell;
+import pl.pijok.autosell.essentials.ChatUtils;
 import pl.pijok.autosell.essentials.ConfigUtils;
 import pl.pijok.autosell.essentials.Debug;
 import pl.pijok.autosell.essentials.Utils;
+import pl.pijok.autosell.settings.Lang;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -59,18 +61,13 @@ public class SellingController {
         }
 
         if(value == 0){
-            //TODO Add message nothing to sell
+            ChatUtils.sendMessage(player, Lang.getText("NOTHING_TO_SELL"));
             return;
         }
 
-        for(String permission : multipliers.keySet()){
-            if(player.hasPermission(permission)){
-                value = value * multipliers.get(permission);
-                break;
-            }
-        }
+        value = Utils.round(countMultiplier(player, value),2);
 
-        //TODO Add message about sold items
+        ChatUtils.sendMessage(player, Lang.getText("SOLD_INVENTORY").replace("%value%", "" + value));
         AutoSell.getEconomy().depositPlayer(player, value);
     }
 
@@ -79,15 +76,20 @@ public class SellingController {
             return;
         }
 
-        double value = blocksValues.get(itemStack.getType()) * itemStack.getAmount();;
+        double value = blocksValues.get(itemStack.getType()) * itemStack.getAmount();
 
+        value = Utils.round(countMultiplier(player, value),2);
+
+        AutoSell.getEconomy().depositPlayer(player, value);
+    }
+
+    private double countMultiplier(Player player, double value){
         for(String permission : multipliers.keySet()){
             if(player.hasPermission(permission)){
                 value = value * multipliers.get(permission);
-                break;
+                return value;
             }
         }
-
-        AutoSell.getEconomy().depositPlayer(player, value);
+        return value;
     }
 }
