@@ -1,5 +1,6 @@
 package pl.pijok.autosell;
 
+import pl.pijok.autosell.listeners.BlockBreakListener;
 import pl.pijok.autosell.listeners.JoinListener;
 import pl.pijok.autosell.listeners.QuitListener;
 
@@ -9,6 +10,7 @@ public class Listeners {
 
         plugin.getServer().getPluginManager().registerEvents(new JoinListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new QuitListener(), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new BlockBreakListener(), plugin);
 
     }
 

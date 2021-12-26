@@ -2,7 +2,7 @@
 componentUsage: RAM
 
 #Should player data be saved in database or yaml file
-database: true
+database: false
 
 #Database settings
 sqlSettings:
@@ -24,7 +24,7 @@ sellAllEnabled: true
 countOnlyOnMiningTools: false
 
 miningTools:
-  - WOODEN_PICKAXE
+  - WOOD_PICKAXE
   - STONE_PICKAXE
   - IRON_PICKAXE
   - DIAMOND_PICKAXE

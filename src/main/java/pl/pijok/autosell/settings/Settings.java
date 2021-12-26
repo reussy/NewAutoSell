@@ -46,7 +46,7 @@ public class Settings {
         miningTools = new ArrayList<>();
         for(String materialName : configuration.getStringList("miningTools")){
             if(!Utils.isMaterial(materialName)){
-                Debug.log("&cWrong material name in config.yml -> miningTools section");
+                Debug.log("&cWrong material name " + materialName + " in config.yml -> miningTools section");
                 continue;
             }
 

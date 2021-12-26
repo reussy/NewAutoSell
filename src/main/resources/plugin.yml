@@ -8,3 +8,17 @@ description: Allow players to automaticly sell mined blocks.
 softdepend:
   - WorldGuard
   - Vault
+  - PlaceholderAPI
+commands:
+  autosell:
+    usage: /autosell
+    description: Used to enable or disable autosell function
+  sellall:
+    usage: /sellall
+    description: Used to sell all items from inventory
+  adminautosell:
+    usage: /adminautosell
+    description: Admin command for managing autosell plugin
+    aliases:
+      - aas
+      - aautosell

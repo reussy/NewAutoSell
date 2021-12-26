@@ -11,8 +11,10 @@ import pl.pijok.autosell.essentials.Debug;
 import pl.pijok.autosell.essentials.Utils;
 import pl.pijok.autosell.settings.Lang;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public class SellingController {
 
@@ -31,7 +33,7 @@ public class SellingController {
         //Loading blocks values
         for(String materialName : configuration.getConfigurationSection("blocks").getKeys(false)){
             if(!Utils.isMaterial(materialName)){
-                Debug.log("&cWrong material name in blocksValues.yml -> blocks section");
+                Debug.log("&cWrong material name " + materialName + " in blocksValues.yml -> blocks section");
                 continue;
             }
 
@@ -50,6 +52,8 @@ public class SellingController {
     public void sellPlayerInventory(Player player){
         double value = 0;
 
+        List<ItemStack> toRemove = new ArrayList<>();
+
         for(ItemStack itemStack : player.getInventory().getContents()){
             if(itemStack == null || itemStack.getType().equals(Material.AIR)){
                 continue;
@@ -57,6 +61,7 @@ public class SellingController {
 
             if(blocksValues.containsKey(itemStack.getType())){
                 value += blocksValues.get(itemStack.getType()) * itemStack.getAmount();
+                toRemove.add(itemStack);
             }
         }
 
@@ -66,6 +71,10 @@ public class SellingController {
         }
 
         value = Utils.round(countMultiplier(player, value),2);
+
+        for(ItemStack itemStack : toRemove){
+            player.getInventory().remove(itemStack);
+        }
 
         ChatUtils.sendMessage(player, Lang.getText("SOLD_INVENTORY").replace("%value%", "" + value));
         AutoSell.getEconomy().depositPlayer(player, value);
@@ -91,5 +100,9 @@ public class SellingController {
             }
         }
         return value;
+    }
+
+    public boolean isSellableItem(Material material){
+        return blocksValues.containsKey(material);
     }
 }

@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import pl.pijok.autosell.Controllers;
+import pl.pijok.autosell.essentials.Debug;
 import pl.pijok.autosell.miner.MinersController;
 import pl.pijok.autosell.selling.SellingController;
 import pl.pijok.autosell.settings.Settings;
@@ -34,7 +35,16 @@ public class BlockBreakListener implements Listener {
 
         if(minersController.getMiner(player).isAutoSell()){
             //TODO Change new Itemstack to event.getBlock().getDrops(ItemStack);
-            sellingController.sellSingleItem(player, new ItemStack(event.getBlock().getType()));
+            if(sellingController.isSellableItem(event.getBlock().getType())){
+                Debug.log("Checking collection");
+                for(ItemStack itemStack : event.getBlock().getDrops()){
+                    Debug.log(itemStack.getType()  + " " + itemStack.getAmount());
+                }
+                Debug.log("=====");
+                sellingController.sellSingleItem(player, new ItemStack(event.getBlock().getType()));
+                event.setDropItems(false);
+            }
+
         }
 
     }

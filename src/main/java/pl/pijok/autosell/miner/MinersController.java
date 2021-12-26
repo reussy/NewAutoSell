@@ -50,6 +50,10 @@ public class MinersController {
         }
     }
 
+    public void createNewMiner(Player player){
+        miners.put(player.getName(), new Miner(0, false));
+    }
+
     public void saveAllMinersData(){
         if(Settings.isDatabaseUsage()){
             //TODO SAVING DATA TO DATABASE

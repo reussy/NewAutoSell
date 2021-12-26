@@ -1,6 +1,7 @@
 package pl.pijok.autosell;
 
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.pijok.autosell.essentials.ConfigUtils;
@@ -34,6 +35,11 @@ public class AutoSell extends JavaPlugin {
         else{
             Debug.log("&aEverything loaded!");
             Debug.log("&aHave a nice day :D");
+        }
+
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
+            new Placeholders().register();
+            Debug.log("&aHooked into PlaceholderAPI!");
         }
 
     }
