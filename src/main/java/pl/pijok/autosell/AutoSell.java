@@ -49,6 +49,10 @@ public class AutoSell extends JavaPlugin {
 
         Controllers.getMinersController().saveAllMinersData();
 
+        if(Controllers.getDatabaseManager().getHikariDataSource() != null){
+            Controllers.getDatabaseManager().getHikariDataSource().close();
+        }
+
     }
 
     public boolean loadStuff(boolean reload){

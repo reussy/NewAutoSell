@@ -2,6 +2,7 @@ package pl.pijok.autosell.settings;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import pl.pijok.autosell.Controllers;
 import pl.pijok.autosell.essentials.ConfigUtils;
 import pl.pijok.autosell.essentials.Debug;
 import pl.pijok.autosell.essentials.Utils;
@@ -38,6 +39,9 @@ public class Settings {
                     configuration.getString("sqlSettings.host"),
                     configuration.getString("sqlSettings.database")
             );
+
+            Controllers.getDatabaseManager().setSqlSettings(sqlSettings);
+            Controllers.getDatabaseManager().createDataSource();
         }
         componentUsage = configuration.getString("componentUsage");
         autoSellEnabled = configuration.getBoolean("autoSellEnabled");
