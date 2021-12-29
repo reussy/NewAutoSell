@@ -26,7 +26,6 @@ public class MinersController {
 
     public void loadAllMinersData(){
         if(Settings.isDatabaseUsage()){
-            //TODO LOADING DATA FROM DATABASE
             Bukkit.getScheduler().runTaskAsynchronously(AutoSell.getInstance(), new Runnable() {
                 @Override
                 public void run() {
@@ -67,7 +66,6 @@ public class MinersController {
 
     public void loadMiner(String nickname){
         if(Settings.isDatabaseUsage()){
-            //TODO LOADING DATA FROM DATABASE
             Bukkit.getScheduler().runTaskAsynchronously(AutoSell.getInstance(), new Runnable() {
                 @Override
                 public void run() {
@@ -79,13 +77,15 @@ public class MinersController {
                         boolean autosell = false;
 
                         ResultSet resultSet = getMiner.executeQuery();
-                        if(resultSet.getFetchSize() == 1){
+                        if(resultSet.next()){
+                            Debug.log("Getting miner!");
                             blocksMined = resultSet.getInt("blocksMined");
                             autosell = resultSet.getBoolean("autosell");
 
                             getMiner.close();
                         }
                         else{
+                            Debug.log("New miner!");
                             PreparedStatement insertMiner = connection.prepareStatement(PreparedStatements.insertPlayer);
                             insertMiner.setString(1, nickname);
                             insertMiner.setInt(2, 0);
@@ -124,7 +124,6 @@ public class MinersController {
 
     public void saveAllMinersData(){
         if(Settings.isDatabaseUsage()){
-            //TODO SAVING DATA TO DATABASE
             Bukkit.getScheduler().runTaskAsynchronously(AutoSell.getInstance(), new Runnable() {
                 @Override
                 public void run() {
@@ -165,7 +164,6 @@ public class MinersController {
 
     public void saveMiner(String nickname){
         if(Settings.isDatabaseUsage()) {
-            //TODO SAVING DATA TO DATABASE
             try(Connection connection = Controllers.getDatabaseManager().getHikariDataSource().getConnection()){
                 Miner miner = miners.get(nickname);
                 PreparedStatement statement = connection.prepareStatement(PreparedStatements.updatePlayer);

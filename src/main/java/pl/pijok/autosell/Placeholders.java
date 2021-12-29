@@ -28,6 +28,13 @@ public class Placeholders extends PlaceholderExpansion {
     @Override
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String params) {
 
+        if(player == null){
+            return "";
+        }
+        if(minersController.getMiner(player.getName()) == null){
+            return "";
+        }
+
         if(params.equalsIgnoreCase("blocksMined")){
             return String.valueOf(minersController.getMiner(player.getName()).getMinedBlocks());
         }

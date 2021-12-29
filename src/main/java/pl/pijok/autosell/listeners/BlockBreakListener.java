@@ -1,5 +1,11 @@
 package pl.pijok.autosell.listeners;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import pl.pijok.autosell.Controllers;
+import pl.pijok.autosell.Storage;
 import pl.pijok.autosell.essentials.Debug;
 import pl.pijok.autosell.miner.MinersController;
 import pl.pijok.autosell.selling.SellingController;
@@ -21,6 +28,14 @@ public class BlockBreakListener implements Listener {
     public void onBreak(BlockBreakEvent event){
 
         Player player = event.getPlayer();
+
+        if(Storage.detectedWorldGuard){
+            if(!Settings.isIgnoreWorldGuard()){
+                if(!canBuild(player, event.getBlock().getLocation())){
+                    return;
+                }
+            }
+        }
 
         if(Settings.isCountBlocks()){
             if(Settings.isCountOnlyOnMiningTools()){
@@ -47,6 +62,12 @@ public class BlockBreakListener implements Listener {
 
         }
 
+    }
+
+    private boolean canBuild(Player p, Location l) {
+        RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
+        com.sk89q.worldedit.util.Location loc = BukkitAdapter.adapt(l);
+        return query.testState(loc, WorldGuardPlugin.inst().wrapPlayer(p), Flags.BLOCK_BREAK);
     }
 
 }

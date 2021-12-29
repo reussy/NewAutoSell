@@ -1,16 +1,20 @@
-#Which component should be more used
-componentUsage: RAM
+#Which component should be more used (RAM or CPU)
+componentUsage: CPU
 
 #Should player data be saved in database or yaml file
 database: false
 
 #Database settings
+#Available database types
+#MariaDB
 sqlSettings:
   user: user
   password: passwrd
   host: localhost
   port: 3306
-  database: sampleDatabase
+  database: simpleDatabase
+  driver: MariaDB
+
 #Should players be able to enable auto sell function
 autoSellEnabled: true
 
@@ -22,6 +26,21 @@ sellAllEnabled: true
 
 #Should blocks be counted only if broken with "miningTools"
 countOnlyOnMiningTools: false
+
+#Should plugin ignore world guard
+ignoreWorldGuard: false
+
+#======================
+#== Booster Settings ==
+#======================
+
+#Should booster time be counted only if player is online
+boosterOnlyOnline: true
+
+#When player already has booster and he gets another one what should be done
+#ADD - Current booster will be added to new one (x2.5 | 60 sec + 1.5x | 20 sec = 4x | 80 sec)
+#REPLACE - Current will be replaced with new one
+newBoosterAction: ADD
 
 miningTools:
   - WOOD_PICKAXE

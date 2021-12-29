@@ -14,6 +14,10 @@ public class AutoSell extends JavaPlugin {
     private static AutoSell instance;
     private static Economy economy;
 
+    //bStats
+    private final int pluginID = 13757;
+    private Metrics metrics;
+
     @Override
     public void onEnable() {
 
@@ -42,16 +46,22 @@ public class AutoSell extends JavaPlugin {
             Debug.log("&aHooked into PlaceholderAPI!");
         }
 
+        if(Bukkit.getPluginManager().getPlugin("WorldGuard") != null){
+            Debug.log("&aDetected world guard! Hooking!");
+            Storage.detectedWorldGuard = true;
+        }
+        else{
+            Storage.detectedWorldGuard = false;
+        }
+
+        metrics = new Metrics(this, pluginID);
+        Debug.log("&aThank you for your support!");
     }
 
     @Override
     public void onDisable() {
 
         Controllers.getMinersController().saveAllMinersData();
-
-        if(Controllers.getDatabaseManager().getHikariDataSource() != null){
-            Controllers.getDatabaseManager().getHikariDataSource().close();
-        }
 
     }
 
@@ -74,6 +84,10 @@ public class AutoSell extends JavaPlugin {
             }
 
             Controllers.getSellingController().loadSettings();
+
+            if(Settings.isDatabaseUsage()){
+                Controllers.getDatabaseManager().createTables();
+            }
 
         }
         catch (Exception e){

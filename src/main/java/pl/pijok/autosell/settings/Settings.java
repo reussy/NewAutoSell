@@ -3,6 +3,7 @@ package pl.pijok.autosell.settings;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import pl.pijok.autosell.Controllers;
+import pl.pijok.autosell.database.DatabaseManager;
 import pl.pijok.autosell.essentials.ConfigUtils;
 import pl.pijok.autosell.essentials.Debug;
 import pl.pijok.autosell.essentials.Utils;
@@ -26,19 +27,39 @@ public class Settings {
     private static boolean sellAllEnabled;
     private static boolean autoSellEnabled;
 
+    //Mining settings
+    private static boolean ignoreWorldGuard;
+
+    //Boosters settings
+    private static boolean boosterOnlyOnline;
+    private static String newBoosterAction;
+
     public static void load(){
 
         YamlConfiguration configuration = ConfigUtils.load("config.yml");
 
         databaseUsage = configuration.getBoolean("database");
         if(databaseUsage){
-            sqlSettings = new SqlSettings(
+            DatabaseManager databaseManager = Controllers.getDatabaseManager();
+            /*sqlSettings = new SqlSettings(
                     configuration.getString("sqlSettings.user"),
                     configuration.getString("sqlSettings.password"),
                     configuration.getString("sqlSettings.port"),
                     configuration.getString("sqlSettings.host"),
                     configuration.getString("sqlSettings.database")
-            );
+            );*/
+
+            String databaseType = configuration.getString("sqlSettings.type");
+
+            if(databaseType.equals("MariaDB")){
+                databaseManager.getProperties().setProperty("dataSourceClassName", configuration.getString("org.mariadb.jdbc.MariaDbDataSource"));
+            }
+
+            databaseManager.getProperties().setProperty("dataSource.serverName", configuration.getString("sqlSettings.host"));
+            databaseManager.getProperties().setProperty("dataSource.portNumber", configuration.getString("sqlSettings.port"));
+            databaseManager.getProperties().setProperty("dataSource.user", configuration.getString("sqlSettings.user"));
+            databaseManager.getProperties().setProperty("dataSource.password", configuration.getString("sqlSettings.password"));
+            databaseManager.getProperties().setProperty("dataSource.databaseName", configuration.getString("sqlSettings.database"));
 
             Controllers.getDatabaseManager().setSqlSettings(sqlSettings);
             Controllers.getDatabaseManager().createDataSource();
@@ -57,6 +78,11 @@ public class Settings {
             miningTools.add(Material.valueOf(materialName));
         }
         sellAllEnabled = configuration.getBoolean("sellAllEnabled");
+
+        ignoreWorldGuard = configuration.getBoolean("ignoreWorldGuard");
+
+        boosterOnlyOnline = configuration.getBoolean("boosterOnlyOnline");
+        newBoosterAction = configuration.getString("newBoosterAction");
 
     }
 
@@ -122,5 +148,17 @@ public class Settings {
 
     public static void setMiningTools(List<Material> miningTools) {
         Settings.miningTools = miningTools;
+    }
+
+    public static boolean isIgnoreWorldGuard() {
+        return ignoreWorldGuard;
+    }
+
+    public static void setIgnoreWorldGuard(boolean ignoreWorldGuard) {
+        Settings.ignoreWorldGuard = ignoreWorldGuard;
+    }
+
+    public static boolean isBoosterOnlyOnline() {
+        return boosterOnlyOnline;
     }
 }
