@@ -86,16 +86,6 @@ public class MinersController {
 
                             getMiner.close();
                         }
-                        /*else{
-                            Debug.log("New miner!");
-                            PreparedStatement insertMiner = connection.prepareStatement(PreparedStatements.insertPlayer);
-                            insertMiner.setString(1, nickname);
-                            insertMiner.setInt(2, 0);
-                            insertMiner.setBoolean(3, false);
-                            insertMiner.execute();
-
-                            insertMiner.close();
-                        }*/
 
                         resultSet.close();
                         miners.put(nickname, new Miner(blocksMined, autosell));
@@ -141,10 +131,6 @@ public class MinersController {
                             statement.setLong(4, miner.getMinedBlocks());
                             statement.setBoolean(5, miner.isAutoSell());
 
-                            //To remove
-                            /*statement.setLong(1, miner.getMinedBlocks());
-                            statement.setBoolean(2, miner.isAutoSell());
-                            statement.setString(3, nickname);*/
                             statement.execute();
 
                             statement.close();
@@ -193,10 +179,6 @@ public class MinersController {
                 statement.setLong(4, miner.getMinedBlocks());
                 statement.setBoolean(5, miner.isAutoSell());
 
-                //To remove
-                /*statement.setLong(1, miner.getMinedBlocks());
-                statement.setBoolean(2, miner.isAutoSell());
-                statement.setString(3, nickname);*/
                 statement.execute();
 
                 statement.close();

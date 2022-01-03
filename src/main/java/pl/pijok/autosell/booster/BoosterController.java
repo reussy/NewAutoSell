@@ -21,6 +21,10 @@ import java.util.*;
 
 public class BoosterController {
 
+    /*
+        Will be included in future updates
+     */
+
     private AutoSell plugin;
     private HashMap<String, Booster> playersBoosters;
 

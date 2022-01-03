@@ -7,6 +7,9 @@ database: false
 #Database settings
 #Available database types
 #MariaDB
+#PostgreSQL
+#H2
+#OracleDB
 sqlSettings:
   user: user
   password: passwrd

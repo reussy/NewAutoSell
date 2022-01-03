@@ -2,6 +2,9 @@ package pl.pijok.autosell.booster;
 
 public class Booster {
 
+    /*
+        Will be included in future updates
+     */
     private double multiplier;
     private long duration;
 

@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class BoosterEndEvent extends Event {
 
+    /*
+        Will be included in future updates
+     */
     private static final HandlerList HANDLERS = new HandlerList();
 
     private final String nickname;
