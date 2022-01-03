@@ -53,6 +53,15 @@ public class Settings {
             if(databaseType.equalsIgnoreCase("MariaDB")){
                 databaseManager.getProperties().setProperty("dataSourceClassName", "org.mariadb.jdbc.MariaDbDataSource");
             }
+            else if(databaseType.equalsIgnoreCase("Oracle")){
+                databaseManager.getProperties().setProperty("dataSourceClassName", "oracle.jdbc.pool.OracleDataSource");
+            }
+            else if(databaseType.equalsIgnoreCase("PostgreSQL")){
+                databaseManager.getProperties().setProperty("dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource");
+            }
+            else if(databaseType.equalsIgnoreCase("H2")){
+                databaseManager.getProperties().setProperty("dataSourceClassName", "org.h2.jdbcx.JdbcDataSource");
+            }
 
             databaseManager.getProperties().setProperty("dataSource.serverName", configuration.getString("sqlSettings.host"));
             databaseManager.getProperties().setProperty("dataSource.portNumber", configuration.getString("sqlSettings.port"));
