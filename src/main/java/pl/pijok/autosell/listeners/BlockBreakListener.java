@@ -61,6 +61,7 @@ public class BlockBreakListener implements Listener {
         }
         else if(Settings.isDropToInventory()){
             player.getInventory().addItem(createDrop(player, event.getBlock()));
+            event.setDropItems(false);
         }
     }
 

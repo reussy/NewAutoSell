@@ -9,6 +9,7 @@ import pl.pijok.autosell.essentials.Debug;
 import pl.pijok.autosell.essentials.Utils;
 import pl.pijok.autosell.miner.Range;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +61,14 @@ public class Settings {
             databaseManager.getProperties().setProperty("dataSource.databaseName", configuration.getString("sqlSettings.database"));
 
             Controllers.getDatabaseManager().setSqlSettings(sqlSettings);
+            if(Controllers.getDatabaseManager().getHikariDataSource() != null){
+                try{
+                    Controllers.getDatabaseManager().getHikariDataSource().getConnection().close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+
+            }
             Controllers.getDatabaseManager().createDataSource();
         }
 
@@ -85,11 +94,29 @@ public class Settings {
 
         dropToInventory = configuration.getBoolean("dropToInventory");
 
+        fortuneDrops = new HashMap<>();
         for(String fortuneLevel : configuration.getConfigurationSection("fortuneDrops").getKeys(false)){
             int min = configuration.getInt("fortuneDrops." + fortuneLevel + ".min");
             int max = configuration.getInt("fortuneDrops." + fortuneLevel + ".max");
 
             fortuneDrops.put(Integer.parseInt(fortuneLevel), new Range(min, max));
+        }
+
+        oreDrops = new HashMap<>();
+        for(String materialName : configuration.getConfigurationSection("oreDrops").getKeys(false)){
+            if(!Utils.isMaterial(materialName)){
+                Debug.sendError("&cWrong material name in config.yml -> oreDrops " + materialName);
+                continue;
+            }
+
+            String resultName = configuration.getString("oreDrops." + materialName);
+
+            if(!Utils.isMaterial(resultName)){
+                Debug.sendError("&cWrong material name in config.yml -> oreDrops " + resultName);
+                continue;
+            }
+
+            oreDrops.put(Material.valueOf(materialName), Material.valueOf(resultName));
         }
 
     }

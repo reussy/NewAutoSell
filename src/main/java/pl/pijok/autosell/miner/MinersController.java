@@ -140,7 +140,6 @@ public class MinersController {
                             //Update
                             statement.setLong(4, miner.getMinedBlocks());
                             statement.setBoolean(5, miner.isAutoSell());
-                            statement.setString(6, nickname);
 
                             //To remove
                             /*statement.setLong(1, miner.getMinedBlocks());
@@ -193,7 +192,6 @@ public class MinersController {
                 //Update
                 statement.setLong(4, miner.getMinedBlocks());
                 statement.setBoolean(5, miner.isAutoSell());
-                statement.setString(6, nickname);
 
                 //To remove
                 /*statement.setLong(1, miner.getMinedBlocks());
