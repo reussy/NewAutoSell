@@ -10,7 +10,7 @@ public class Commands {
 
         plugin.getCommand("autosell").setExecutor(new AutoSellCommand());
         plugin.getCommand("sellall").setExecutor(new SellAllCommand());
-        plugin.getCommand("adminautosell").setExecutor(new AdminCommand());
+        plugin.getCommand("adminautosell").setExecutor(new AdminCommand(plugin));
 
     }
 

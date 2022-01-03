@@ -18,15 +18,17 @@ import java.util.HashMap;
 
 public class MinersController {
 
+    private final AutoSell plugin;
     private HashMap<String, Miner> miners;
 
-    public MinersController(){
+    public MinersController(AutoSell plugin){
+        this.plugin = plugin;
         miners = new HashMap<>();
     }
 
     public void loadAllMinersData(){
         if(Settings.isDatabaseUsage()){
-            Bukkit.getScheduler().runTaskAsynchronously(AutoSell.getInstance(), new Runnable() {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
                     try(Connection connection = Controllers.getDatabaseManager().getHikariDataSource().getConnection()){
@@ -66,7 +68,7 @@ public class MinersController {
 
     public void loadMiner(String nickname){
         if(Settings.isDatabaseUsage()){
-            Bukkit.getScheduler().runTaskAsynchronously(AutoSell.getInstance(), new Runnable() {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
                     try(Connection connection = Controllers.getDatabaseManager().getHikariDataSource().getConnection()) {
@@ -84,7 +86,7 @@ public class MinersController {
 
                             getMiner.close();
                         }
-                        else{
+                        /*else{
                             Debug.log("New miner!");
                             PreparedStatement insertMiner = connection.prepareStatement(PreparedStatements.insertPlayer);
                             insertMiner.setString(1, nickname);
@@ -93,7 +95,7 @@ public class MinersController {
                             insertMiner.execute();
 
                             insertMiner.close();
-                        }
+                        }*/
 
                         resultSet.close();
                         miners.put(nickname, new Miner(blocksMined, autosell));
@@ -124,16 +126,26 @@ public class MinersController {
 
     public void saveAllMinersData(){
         if(Settings.isDatabaseUsage()){
-            Bukkit.getScheduler().runTaskAsynchronously(AutoSell.getInstance(), new Runnable() {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
                     try(Connection connection = Controllers.getDatabaseManager().getHikariDataSource().getConnection()) {
                         for(String nickname : miners.keySet()){
                             Miner miner = miners.get(nickname);
                             PreparedStatement statement = connection.prepareStatement(PreparedStatements.updatePlayer);
-                            statement.setLong(1, miner.getMinedBlocks());
+                            //Insert
+                            statement.setString(1, nickname);
+                            statement.setLong(2, miner.getMinedBlocks());
+                            statement.setBoolean(3, miner.isAutoSell());
+                            //Update
+                            statement.setLong(4, miner.getMinedBlocks());
+                            statement.setBoolean(5, miner.isAutoSell());
+                            statement.setString(6, nickname);
+
+                            //To remove
+                            /*statement.setLong(1, miner.getMinedBlocks());
                             statement.setBoolean(2, miner.isAutoSell());
-                            statement.setString(3, nickname);
+                            statement.setString(3, nickname);*/
                             statement.execute();
 
                             statement.close();
@@ -167,9 +179,20 @@ public class MinersController {
             try(Connection connection = Controllers.getDatabaseManager().getHikariDataSource().getConnection()){
                 Miner miner = miners.get(nickname);
                 PreparedStatement statement = connection.prepareStatement(PreparedStatements.updatePlayer);
-                statement.setLong(1, miner.getMinedBlocks());
+
+                //Insert
+                statement.setString(1, nickname);
+                statement.setLong(2, miner.getMinedBlocks());
+                statement.setBoolean(3, miner.isAutoSell());
+                //Update
+                statement.setLong(4, miner.getMinedBlocks());
+                statement.setBoolean(5, miner.isAutoSell());
+                statement.setString(6, nickname);
+
+                //To remove
+                /*statement.setLong(1, miner.getMinedBlocks());
                 statement.setBoolean(2, miner.isAutoSell());
-                statement.setString(3, nickname);
+                statement.setString(3, nickname);*/
                 statement.execute();
 
                 statement.close();

@@ -42,7 +42,7 @@ public class AutoSell extends JavaPlugin {
         }
 
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
-            new Placeholders().register();
+            new Placeholders(this).register();
             Debug.log("&aHooked into PlaceholderAPI!");
         }
 
@@ -69,13 +69,17 @@ public class AutoSell extends JavaPlugin {
 
         try{
             if(!reload){
-                Controllers.create();
+                Controllers.create(this);
                 Listeners.register(this);
                 Commands.register(this);
             }
 
             Settings.load();
             Lang.load();
+
+            if(Settings.isDatabaseUsage()){
+                Controllers.getDatabaseManager().createTables();
+            }
 
             if(!reload){
                 if(Settings.getComponentUsage().equalsIgnoreCase("RAM")){
@@ -84,10 +88,6 @@ public class AutoSell extends JavaPlugin {
             }
 
             Controllers.getSellingController().loadSettings();
-
-            if(Settings.isDatabaseUsage()){
-                Controllers.getDatabaseManager().createTables();
-            }
 
         }
         catch (Exception e){
@@ -108,10 +108,6 @@ public class AutoSell extends JavaPlugin {
         }
         economy = rsp.getProvider();
         return economy != null;
-    }
-
-    public static AutoSell getInstance() {
-        return instance;
     }
 
     public static Economy getEconomy() {

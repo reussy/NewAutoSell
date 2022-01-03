@@ -10,11 +10,11 @@ public class Controllers {
     private static SellingController sellingController;
     private static DatabaseManager databaseManager;
 
-    public static void create(){
+    public static void create(AutoSell plugin){
 
-        minersController = new MinersController();
-        sellingController = new SellingController();
-        databaseManager = new DatabaseManager();
+        minersController = new MinersController(plugin);
+        sellingController = new SellingController(plugin);
+        databaseManager = new DatabaseManager(plugin);
 
     }
 

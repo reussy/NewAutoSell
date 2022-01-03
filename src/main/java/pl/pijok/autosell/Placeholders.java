@@ -8,7 +8,12 @@ import pl.pijok.autosell.miner.MinersController;
 
 public class Placeholders extends PlaceholderExpansion {
 
+    private final AutoSell plugin;
     private final MinersController minersController = Controllers.getMinersController();
+
+    public Placeholders(AutoSell plugin){
+        this.plugin = plugin;
+    }
 
     @Override
     public @NotNull String getIdentifier() {
@@ -22,7 +27,7 @@ public class Placeholders extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return AutoSell.getInstance().getDescription().getVersion();
+        return plugin.getDescription().getVersion();
     }
 
     @Override

@@ -5,3 +5,7 @@ lang:
   SOLD_INVENTORY: "&aSold all items from inventory for &e%value%&a$"
   AUTOSELL_ON: "&aTurned on autosell!"
   AUTOSELL_OFF: "&cTurned off autosell!"
+  BOOSTER_START: "&aYou just got a booster &ex%multiplier% &afor &e%time%&a!"
+  BOOSTER_END: "&cYour booster just ended :("
+  CURRENT_BOOSTER: "&aYou currently have booster &ex%multiplier% &afor &e%time%&a"
+  PLAYER_OFFLINE: "&cPlayer is offline!"

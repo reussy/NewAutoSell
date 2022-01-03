@@ -41,13 +41,6 @@ public class Settings {
         databaseUsage = configuration.getBoolean("database");
         if(databaseUsage){
             DatabaseManager databaseManager = Controllers.getDatabaseManager();
-            /*sqlSettings = new SqlSettings(
-                    configuration.getString("sqlSettings.user"),
-                    configuration.getString("sqlSettings.password"),
-                    configuration.getString("sqlSettings.port"),
-                    configuration.getString("sqlSettings.host"),
-                    configuration.getString("sqlSettings.database")
-            );*/
 
             String databaseType = configuration.getString("sqlSettings.type");
 
@@ -64,6 +57,7 @@ public class Settings {
             Controllers.getDatabaseManager().setSqlSettings(sqlSettings);
             Controllers.getDatabaseManager().createDataSource();
         }
+
         componentUsage = configuration.getString("componentUsage");
         autoSellEnabled = configuration.getBoolean("autoSellEnabled");
         countBlocks = configuration.getBoolean("countingBlocksEnabled");
@@ -160,5 +154,9 @@ public class Settings {
 
     public static boolean isBoosterOnlyOnline() {
         return boosterOnlyOnline;
+    }
+
+    public static String getNewBoosterAction() {
+        return newBoosterAction;
     }
 }

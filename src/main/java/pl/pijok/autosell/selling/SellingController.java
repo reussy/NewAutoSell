@@ -18,10 +18,13 @@ import java.util.List;
 
 public class SellingController {
 
+    private final AutoSell plugin;
+
     private HashMap<Material, Double> blocksValues;
     private LinkedHashMap<String, Double> multipliers;
 
-    public SellingController(){
+    public SellingController(AutoSell plugin){
+        this.plugin = plugin;
         blocksValues = new HashMap<>();
         multipliers = new LinkedHashMap<>();
     }
@@ -76,7 +79,8 @@ public class SellingController {
             player.getInventory().remove(itemStack);
         }
 
-        ChatUtils.sendMessage(player, Lang.getText("SOLD_INVENTORY").replace("%value%", "" + value));
+        String message = Lang.getText("SOLD_INVENTORY").replace("%value%", "" + value);
+        ChatUtils.sendMessage(player, message);
         AutoSell.getEconomy().depositPlayer(player, value);
     }
 

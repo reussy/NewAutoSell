@@ -14,28 +14,22 @@ import java.util.Properties;
 
 public class DatabaseManager {
 
+    private final AutoSell plugin;
     private SqlSettings sqlSettings;
     private DataSource hikariDataSource;
     private Properties properties;
 
-    public DatabaseManager(){
+    public DatabaseManager(AutoSell plugin){
+        this.plugin = plugin;
         properties = new Properties();
     }
 
     public void createDataSource(){
-        /*hikariDataSource = new HikariDataSource();
-        hikariDataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
-        hikariDataSource.addDataSourceProperty("serverName", sqlSettings.getHost());
-        hikariDataSource.addDataSourceProperty("port", sqlSettings.getPort());
-        hikariDataSource.addDataSourceProperty("databaseName", sqlSettings.getDatabase());
-        hikariDataSource.addDataSourceProperty("user", sqlSettings.getUser());
-        hikariDataSource.addDataSourceProperty("password", sqlSettings.getPassword());*/
-
         hikariDataSource = new HikariDataSource(new HikariConfig(properties));
     }
 
     public void createTables(){
-        Bukkit.getScheduler().runTaskAsynchronously(AutoSell.getInstance(), new Runnable() {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
                 try(Connection connection = hikariDataSource.getConnection()){
