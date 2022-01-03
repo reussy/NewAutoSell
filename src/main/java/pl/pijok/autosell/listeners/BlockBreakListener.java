@@ -7,6 +7,8 @@ import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +17,9 @@ import org.bukkit.inventory.ItemStack;
 import pl.pijok.autosell.Controllers;
 import pl.pijok.autosell.Storage;
 import pl.pijok.autosell.essentials.Debug;
+import pl.pijok.autosell.essentials.Utils;
 import pl.pijok.autosell.miner.MinersController;
+import pl.pijok.autosell.miner.Range;
 import pl.pijok.autosell.selling.SellingController;
 import pl.pijok.autosell.settings.Settings;
 
@@ -32,6 +36,7 @@ public class BlockBreakListener implements Listener {
         if(Storage.detectedWorldGuard){
             if(!Settings.isIgnoreWorldGuard()){
                 if(!canBuild(player, event.getBlock().getLocation())){
+                    Debug.log("Canceling task!");
                     return;
                 }
             }
@@ -49,25 +54,38 @@ public class BlockBreakListener implements Listener {
         }
 
         if(minersController.getMiner(player).isAutoSell()){
-            //TODO Change new Itemstack to event.getBlock().getDrops(ItemStack);
             if(sellingController.isSellableItem(event.getBlock().getType())){
-                Debug.log("Checking collection");
-                for(ItemStack itemStack : event.getBlock().getDrops()){
-                    Debug.log(itemStack.getType()  + " " + itemStack.getAmount());
-                }
-                Debug.log("=====");
-                sellingController.sellSingleItem(player, new ItemStack(event.getBlock().getType()));
+                sellingController.sellSingleItem(player, createDrop(player, event.getBlock()));
                 event.setDropItems(false);
             }
-
         }
-
+        else if(Settings.isDropToInventory()){
+            player.getInventory().addItem(createDrop(player, event.getBlock()));
+        }
     }
 
     private boolean canBuild(Player p, Location l) {
         RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
         com.sk89q.worldedit.util.Location loc = BukkitAdapter.adapt(l);
-        return query.testState(loc, WorldGuardPlugin.inst().wrapPlayer(p), Flags.BLOCK_BREAK);
+        return !query.testState(loc, WorldGuardPlugin.inst().wrapPlayer(p), Flags.BLOCK_BREAK);
+    }
+
+    private ItemStack createDrop(Player player, Block block){
+        ItemStack itemStack;
+
+        if(Settings.getOreDrops().containsKey(block.getType())){
+            itemStack = new ItemStack(Settings.getOreDrops().get(block.getType()));
+        }
+        else{
+            itemStack = new ItemStack(block.getType());
+        }
+
+        if(player.getInventory().getItemInMainHand().getEnchantments().containsKey(Enchantment.LOOT_BONUS_BLOCKS)){
+            Range range = Settings.getFortuneDrop(player.getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS));
+            itemStack.setAmount(Utils.getRandomNumber(range.getMin(), range.getMax()));
+        }
+
+        return itemStack;
     }
 
 }

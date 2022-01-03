@@ -13,7 +13,7 @@ sqlSettings:
   host: localhost
   port: 3306
   database: simpleDatabase
-  driver: MariaDB
+  type: MariaDB
 
 #Should players be able to enable auto sell function
 autoSellEnabled: true
@@ -30,20 +30,32 @@ countOnlyOnMiningTools: false
 #Should plugin ignore world guard
 ignoreWorldGuard: false
 
-#======================
-#== Booster Settings ==
-#======================
-
-#Should booster time be counted only if player is online
-boosterOnlyOnline: true
-
-#When player already has booster and he gets another one what should be done
-#ADD - Current booster will be added to new one (x2.5 | 60 sec + 1.5x | 20 sec = 4x | 80 sec)
-#REPLACE - Current will be replaced with new one
-newBoosterAction: ADD
+#Drop to inventory
+dropToInventory: true
 
 miningTools:
-  - WOOD_PICKAXE
+  - WOODEN_PICKAXE
   - STONE_PICKAXE
   - IRON_PICKAXE
   - DIAMOND_PICKAXE
+
+
+#What ores should dropped when mined with autosell or dropToInventory enabled
+oreDrops:
+  COAL_ORE: COAL
+  EMERALD_ORE: EMERALD
+  IRON_ORE: IRON_INGOT
+  GOLD_ORE: GOLD_INGOT
+  DIAMOND_ORE: DIAMOND
+
+#Used to count dropped items while autosell or dropToInventory is enabled
+fortuneDrops:
+  1:
+    min: 1
+    max: 2
+  2:
+    min: 1
+    max: 3
+  3:
+    min: 1
+    max: 5

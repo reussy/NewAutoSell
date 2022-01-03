@@ -5,6 +5,7 @@ authors:
 version: 1.0.0
 main: pl.pijok.autosell.AutoSell
 description: Allow players to automaticly sell mined blocks.
+api-version: 1.13
 softdepend:
   - WorldGuard
   - Vault

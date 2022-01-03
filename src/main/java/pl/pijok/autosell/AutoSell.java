@@ -11,7 +11,6 @@ import pl.pijok.autosell.settings.Settings;
 
 public class AutoSell extends JavaPlugin {
 
-    private static AutoSell instance;
     private static Economy economy;
 
     //bStats
@@ -20,8 +19,6 @@ public class AutoSell extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
-        instance = this;
 
         Debug.setPrefix("[AutoSell] ");
         ConfigUtils.setPlugin(this);
@@ -61,7 +58,11 @@ public class AutoSell extends JavaPlugin {
     @Override
     public void onDisable() {
 
-        Controllers.getMinersController().saveAllMinersData();
+        Debug.log("&cSaving data!");
+
+        Controllers.getMinersController().saveAllMinersData(true);
+
+        Debug.log("&aSaved!");
 
     }
 
@@ -77,8 +78,10 @@ public class AutoSell extends JavaPlugin {
             Settings.load();
             Lang.load();
 
-            if(Settings.isDatabaseUsage()){
-                Controllers.getDatabaseManager().createTables();
+            if(!reload){
+                if(Settings.isDatabaseUsage()){
+                    Controllers.getDatabaseManager().createTables();
+                }
             }
 
             if(!reload){

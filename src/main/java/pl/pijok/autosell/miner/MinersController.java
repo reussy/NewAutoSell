@@ -124,9 +124,9 @@ public class MinersController {
         miners.put(player.getName(), new Miner(0, false));
     }
 
-    public void saveAllMinersData(){
+    public void saveAllMinersData(boolean serverDisabling){
         if(Settings.isDatabaseUsage()){
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
                     try(Connection connection = Controllers.getDatabaseManager().getHikariDataSource().getConnection()) {
@@ -155,7 +155,13 @@ public class MinersController {
                         throwables.printStackTrace();
                     }
                 }
-            });
+            };
+            if(serverDisabling){
+                runnable.run();
+            }
+            else{
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
+            }
 
         }
         else{

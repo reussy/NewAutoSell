@@ -7,8 +7,10 @@ import pl.pijok.autosell.database.DatabaseManager;
 import pl.pijok.autosell.essentials.ConfigUtils;
 import pl.pijok.autosell.essentials.Debug;
 import pl.pijok.autosell.essentials.Utils;
+import pl.pijok.autosell.miner.Range;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Settings {
@@ -29,6 +31,9 @@ public class Settings {
 
     //Mining settings
     private static boolean ignoreWorldGuard;
+    private static boolean dropToInventory;
+    private static HashMap<Integer, Range> fortuneDrops;
+    private static HashMap<Material, Material> oreDrops;
 
     //Boosters settings
     private static boolean boosterOnlyOnline;
@@ -44,8 +49,8 @@ public class Settings {
 
             String databaseType = configuration.getString("sqlSettings.type");
 
-            if(databaseType.equals("MariaDB")){
-                databaseManager.getProperties().setProperty("dataSourceClassName", configuration.getString("org.mariadb.jdbc.MariaDbDataSource"));
+            if(databaseType.equalsIgnoreCase("MariaDB")){
+                databaseManager.getProperties().setProperty("dataSourceClassName", "org.mariadb.jdbc.MariaDbDataSource");
             }
 
             databaseManager.getProperties().setProperty("dataSource.serverName", configuration.getString("sqlSettings.host"));
@@ -75,8 +80,17 @@ public class Settings {
 
         ignoreWorldGuard = configuration.getBoolean("ignoreWorldGuard");
 
-        boosterOnlyOnline = configuration.getBoolean("boosterOnlyOnline");
-        newBoosterAction = configuration.getString("newBoosterAction");
+        //boosterOnlyOnline = configuration.getBoolean("boosterOnlyOnline");
+        //newBoosterAction = configuration.getString("newBoosterAction");
+
+        dropToInventory = configuration.getBoolean("dropToInventory");
+
+        for(String fortuneLevel : configuration.getConfigurationSection("fortuneDrops").getKeys(false)){
+            int min = configuration.getInt("fortuneDrops." + fortuneLevel + ".min");
+            int max = configuration.getInt("fortuneDrops." + fortuneLevel + ".max");
+
+            fortuneDrops.put(Integer.parseInt(fortuneLevel), new Range(min, max));
+        }
 
     }
 
@@ -158,5 +172,21 @@ public class Settings {
 
     public static String getNewBoosterAction() {
         return newBoosterAction;
+    }
+
+    public static HashMap<Integer, Range> getFortuneDrops() {
+        return fortuneDrops;
+    }
+
+    public static boolean isDropToInventory() {
+        return dropToInventory;
+    }
+
+    public static Range getFortuneDrop(int level){
+        return fortuneDrops.getOrDefault(level, null);
+    }
+
+    public static HashMap<Material, Material> getOreDrops() {
+        return oreDrops;
     }
 }
