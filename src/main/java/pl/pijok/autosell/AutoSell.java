@@ -17,6 +17,9 @@ public class AutoSell extends JavaPlugin {
     private final int pluginID = 13757;
     private Metrics metrics;
 
+    //Update checker
+    private final int spigotID = 98930;
+
     @Override
     public void onEnable() {
 
@@ -52,6 +55,16 @@ public class AutoSell extends JavaPlugin {
         }
 
         metrics = new Metrics(this, pluginID);
+
+        new UpdateChecker(this, spigotID).getVersion(version -> {
+            if (this.getDescription().getVersion().equals(version)) {
+                Debug.log("&aYour version is up-to-date!");
+            } else {
+                Debug.log("&cThere is new update!");
+                Debug.log("&cCheck https://www.spigotmc.org/resources/pijoks-new-autosell.98930/");
+            }
+        });
+
         Debug.log("&aThank you for your support!");
     }
 

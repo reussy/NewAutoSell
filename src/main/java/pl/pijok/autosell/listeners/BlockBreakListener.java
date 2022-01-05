@@ -33,14 +33,18 @@ public class BlockBreakListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if(Storage.detectedWorldGuard){
+        if(event.isCancelled()){
+            return;
+        }
+
+        /*if(Storage.detectedWorldGuard){
             if(!Settings.isIgnoreWorldGuard()){
                 if(!canBuild(player, event.getBlock().getLocation())){
                     Debug.log("Canceling task!");
                     return;
                 }
             }
-        }
+        }*/
 
         if(Settings.isCountBlocks()){
             if(Settings.isCountOnlyOnMiningTools()){
@@ -83,7 +87,9 @@ public class BlockBreakListener implements Listener {
 
         if(player.getInventory().getItemInMainHand().getEnchantments().containsKey(Enchantment.LOOT_BONUS_BLOCKS)){
             Range range = Settings.getFortuneDrop(player.getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS));
-            itemStack.setAmount(Utils.getRandomNumber(range.getMin(), range.getMax()));
+            if(range != null){
+                itemStack.setAmount(Utils.getRandomNumber(range.getMin(), range.getMax()));
+            }
         }
 
         return itemStack;

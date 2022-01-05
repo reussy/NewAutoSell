@@ -2,7 +2,7 @@ name: AutoSell
 authors:
   - Pijok
   - FezMLG
-version: 1.0.0
+version: 1.0.2
 main: pl.pijok.autosell.AutoSell
 description: Allow players to automaticly sell mined blocks.
 api-version: 1.13
