@@ -37,6 +37,11 @@
       <option name="url" value="https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="repo" />
+      <option name="name" value="repo" />
+      <option name="url" value="https://repo.mattstudios.me/artifactory/public/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="sk89q-repo" />
       <option name="name" value="sk89q-repo" />
       <option name="url" value="https://maven.enginehub.org/repo/" />

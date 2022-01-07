@@ -42,6 +42,21 @@ public class DatabaseManager {
                 }
             }
         });
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                try(Connection connection = hikariDataSource.getConnection()){
+
+                    PreparedStatement createColumns = connection.prepareStatement(PreparedStatements.createFilterColumn);
+                    createColumns.execute();
+                    createColumns.close();
+
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        });
     }
 
     public SqlSettings getSqlSettings() {

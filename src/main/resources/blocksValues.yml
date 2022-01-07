@@ -3,7 +3,6 @@ blocks:
   COBBLESTONE: 0.05
   STONE: 0.5
   COAL: 1.0
-  COAL_ORE: 1.2
   IRON_ORE: 5.0
   GOLD_ORE: 10.0
   EMERALD: 25.0

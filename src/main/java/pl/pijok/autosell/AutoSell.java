@@ -104,6 +104,7 @@ public class AutoSell extends JavaPlugin {
             }
 
             Controllers.getSellingController().loadSettings();
+            Controllers.getSellingController().loadGui();
 
         }
         catch (Exception e){

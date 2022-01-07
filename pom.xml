@@ -6,7 +6,7 @@
 
     <groupId>pl.pijok</groupId>
     <artifactId>NewAutoSell</artifactId>
-    <version>1.0.2</version>
+    <version>1.1.0</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -39,6 +39,13 @@
         <repository>
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
+        </repository>
+
+        <!-- GUI lib -->
+
+        <repository>
+            <id>repo</id>
+            <url>https://repo.mattstudios.me/artifactory/public/</url>
         </repository>
 
         <!-- SQL DRIVERS -->
@@ -89,6 +96,14 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- GUI lib -->
+
+        <dependency>
+            <groupId>dev.triumphteam</groupId>
+            <artifactId>triumph-gui</artifactId>
+            <version>3.0.5</version> <!-- replace version here -->
+        </dependency>
+
         <!-- SQL DRIVERS -->
 
         <!-- MariaDB -->
@@ -131,6 +146,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.4</version>
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>dev.triumphteam.gui</pattern>
+                            <shadedPattern>pl.pijok.autosell.gui</shadedPattern> <!-- Replace package here here -->
+                        </relocation>
+                    </relocations>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>

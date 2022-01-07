@@ -7,12 +7,15 @@ public class PreparedStatements {
             "(" +
             "name varchar(36) PRIMARY KEY," +
             "blocksMined int(11)," +
-            "autosell boolean" +
+            "autosell boolean," +
+            "filter TEXT NULL" +
             ");";
+
+    public static String createFilterColumn = "ALTER TABLE autosell ADD COLUMN IF NOT EXISTS filter TEXT NULL";
 
     public static String getPlayer = "SELECT * FROM autosell WHERE name=?";
     public static String getAllPlayers = "SELECT * FROM autosell";
-    public static String updatePlayer = "INSERT INTO autosell VALUES(?,?,?) ON DUPLICATE KEY UPDATE blocksMined=?, autosell=?";
+    public static String updatePlayer = "INSERT INTO autosell VALUES(?,?,?,?) ON DUPLICATE KEY UPDATE blocksMined=?, autosell=?, filter=?";
 
     //Boosters
     /*

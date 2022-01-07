@@ -2,3 +2,7 @@ players:
   Pijok_:
     blocksMined: 1
     autoSell: true
+    autoSellFilter:
+      - STONE
+      - COBBLESTONE
+      - COAL

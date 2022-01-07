@@ -43,8 +43,20 @@ public class AutoSellCommand implements CommandExecutor {
 
             return true;
         }
+        if(args.length == 1){
+            if(args[0].equalsIgnoreCase("filter")){
+                if(!player.hasPermission("autosell.filter")){
+                    ChatUtils.sendMessage(player, Lang.getText("PERMISSION_DENIED"));
+                    return true;
+                }
+            }
+
+            Controllers.getSellingController().openFilterGui(player);
+            return true;
+        }
 
         ChatUtils.sendMessage(player, "&7/" + label);
+        ChatUtils.sendMessage(player, "&7/" + label + " filter");
         return true;
     }
 }

@@ -7,6 +7,7 @@ import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -16,17 +17,28 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import pl.pijok.autosell.Controllers;
 import pl.pijok.autosell.Storage;
+import pl.pijok.autosell.essentials.ChatUtils;
 import pl.pijok.autosell.essentials.Debug;
 import pl.pijok.autosell.essentials.Utils;
+import pl.pijok.autosell.miner.Miner;
 import pl.pijok.autosell.miner.MinersController;
 import pl.pijok.autosell.miner.Range;
 import pl.pijok.autosell.selling.SellingController;
+import pl.pijok.autosell.settings.Lang;
 import pl.pijok.autosell.settings.Settings;
+
+import java.util.HashMap;
 
 public class BlockBreakListener implements Listener {
 
     private final MinersController minersController = Controllers.getMinersController();
     private final SellingController sellingController = Controllers.getSellingController();
+
+    private final HashMap<Player, Long> fullInventoryWarnings;
+
+    public BlockBreakListener(){
+        fullInventoryWarnings = new HashMap<>();
+    }
 
     @EventHandler
     public void onBreak(BlockBreakEvent event){
@@ -36,15 +48,6 @@ public class BlockBreakListener implements Listener {
         if(event.isCancelled()){
             return;
         }
-
-        /*if(Storage.detectedWorldGuard){
-            if(!Settings.isIgnoreWorldGuard()){
-                if(!canBuild(player, event.getBlock().getLocation())){
-                    Debug.log("Canceling task!");
-                    return;
-                }
-            }
-        }*/
 
         if(Settings.isCountBlocks()){
             if(Settings.isCountOnlyOnMiningTools()){
@@ -57,15 +60,43 @@ public class BlockBreakListener implements Listener {
             minersController.getMiner(player).increasedMinedBlocks(1);
         }
 
-        if(minersController.getMiner(player).isAutoSell()){
-            if(sellingController.isSellableItem(event.getBlock().getType())){
-                sellingController.sellSingleItem(player, createDrop(player, event.getBlock()));
-                event.setDropItems(false);
+        Miner miner = minersController.getMiner(player);
+
+        if(miner.isAutoSell()){
+            ItemStack itemStack = createDrop(player, event.getBlock());
+            if(miner.getAutoSellFilter().contains(itemStack.getType())){
+                if(sellingController.isSellableItem(itemStack.getType())){
+                    sellingController.sellSingleItem(player, createDrop(player, event.getBlock()));
+                    event.setDropItems(false);
+                }
+            }
+            else{
+                handleDropToInventory(event, player);
             }
         }
-        else if(Settings.isDropToInventory()){
+        else handleDropToInventory(event, player);
+    }
+
+    private void handleDropToInventory(BlockBreakEvent event, Player player) {
+        if(Settings.isDropToInventory()){
             player.getInventory().addItem(createDrop(player, event.getBlock()));
             event.setDropItems(false);
+
+            //Checks for full inventory
+            if(event.getPlayer().getInventory().firstEmpty() == -1){
+                boolean sendWarning = true;
+                if(fullInventoryWarnings.containsKey(player)){
+                    if(System.currentTimeMillis() - fullInventoryWarnings.get(player) < 5000){
+                        sendWarning = false;
+                    }
+                }
+
+                if(sendWarning){
+                    ChatUtils.sendMessage(player, Lang.getText("FULL_INVENTORY"));
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 5, 5);
+                    fullInventoryWarnings.put(player, System.currentTimeMillis());
+                }
+            }
         }
     }
 

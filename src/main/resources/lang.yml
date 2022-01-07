@@ -9,3 +9,4 @@ lang:
   BOOSTER_END: "&cYour booster just ended :("
   CURRENT_BOOSTER: "&aYou currently have booster &ex%multiplier% &afor &e%time%&a"
   PLAYER_OFFLINE: "&cPlayer is offline!"
+  FULL_INVENTORY: "&c&lYour inventory is full!"

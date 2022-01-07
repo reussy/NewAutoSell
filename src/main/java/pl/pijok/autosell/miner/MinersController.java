@@ -1,6 +1,7 @@
 package pl.pijok.autosell.miner;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import pl.pijok.autosell.AutoSell;
@@ -14,7 +15,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class MinersController {
 
@@ -40,8 +43,20 @@ public class MinersController {
                             String nickname = resultSet.getString("name");
                             long blocksMined = resultSet.getLong("blocksMined");
                             boolean autoSellEnabled = resultSet.getBoolean("autosell");
+                            String filters = resultSet.getString("filter");
 
-                            miners.put(nickname, new Miner(blocksMined, autoSellEnabled));
+                            List<Material> filterMaterial = null;
+
+                            if(filters != null){
+                                filterMaterial = Controllers.getSellingController().stringToList(filters);
+                            }
+
+                            if(filterMaterial != null){
+                                miners.put(nickname, new Miner(blocksMined, autoSellEnabled, filterMaterial));
+                            }
+                            else{
+                                miners.put(nickname, new Miner(blocksMined, autoSellEnabled));
+                            }
                         }
 
                         resultSet.close();
@@ -61,11 +76,26 @@ public class MinersController {
                 long blocksMined = configuration.getInt("players." + nickname + ".blocksMined");
                 boolean autoSell = configuration.getBoolean("players." + nickname + ".autoSell");
 
-                miners.put(nickname, new Miner(blocksMined, autoSell));
+                List<Material> filterMaterials = null;
+                if(configuration.contains("players." + nickname + ".autoSellFilter")){
+                    filterMaterials = new ArrayList<>();
+                    for(String id : configuration.getStringList("players." + nickname + ".autoSellFilter")){
+                        filterMaterials.add(Material.valueOf(id));
+                    }
+                }
+
+                if(filterMaterials != null){
+                    miners.put(nickname, new Miner(blocksMined, autoSell, filterMaterials));
+                }
+                else{
+                    miners.put(nickname, new Miner(blocksMined, autoSell));
+                }
+
             }
         }
     }
 
+    //TODO Saving with filter (everywhere) D:
     public void loadMiner(String nickname){
         if(Settings.isDatabaseUsage()){
             Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
@@ -79,16 +109,31 @@ public class MinersController {
                         boolean autosell = false;
 
                         ResultSet resultSet = getMiner.executeQuery();
+
+                        List<Material> filter = null;
+
                         if(resultSet.next()){
                             Debug.log("Getting miner!");
                             blocksMined = resultSet.getInt("blocksMined");
                             autosell = resultSet.getBoolean("autosell");
 
+                            String filterString = resultSet.getString("filter");
+
+                            if(filterString != null){
+                                filter = Controllers.getSellingController().stringToList(filterString);
+                            }
+
                             getMiner.close();
                         }
 
                         resultSet.close();
-                        miners.put(nickname, new Miner(blocksMined, autosell));
+                        if(filter != null){
+                            miners.put(nickname, new Miner(blocksMined, autosell, filter));
+                        }
+                        else{
+                            miners.put(nickname, new Miner(blocksMined, autosell));
+                        }
+
 
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
@@ -101,12 +146,27 @@ public class MinersController {
 
             long blocksMined = 0;
             boolean autoSell = false;
+            List<Material> filter = null;
 
             if(configuration.contains("players." + nickname)){
                 blocksMined = configuration.getLong("players." + nickname + ".blocksMined");
                 autoSell = configuration.getBoolean("players." + nickname + ".autoSell");
+
+                if(configuration.contains("players." + nickname + ".autoSellFilter")){
+                    filter = new ArrayList<>();
+
+                    for(String key : configuration.getStringList("players." + nickname + ".autoSellFilter")){
+                        filter.add(Material.valueOf(key));
+                    }
+                }
             }
-            miners.put(nickname, new Miner(blocksMined, autoSell));
+
+            if(filter == null){
+                miners.put(nickname, new Miner(blocksMined, autoSell));
+            }
+            else{
+                miners.put(nickname, new Miner(blocksMined, autoSell, filter));
+            }
         }
     }
 
@@ -127,9 +187,11 @@ public class MinersController {
                             statement.setString(1, nickname);
                             statement.setLong(2, miner.getMinedBlocks());
                             statement.setBoolean(3, miner.isAutoSell());
+                            statement.setString(4, Controllers.getSellingController().listToString(miner.getAutoSellFilter()));
                             //Update
-                            statement.setLong(4, miner.getMinedBlocks());
-                            statement.setBoolean(5, miner.isAutoSell());
+                            statement.setLong(5, miner.getMinedBlocks());
+                            statement.setBoolean(6, miner.isAutoSell());
+                            statement.setString(7, Controllers.getSellingController().listToString(miner.getAutoSellFilter()));
 
                             statement.execute();
 
@@ -155,8 +217,15 @@ public class MinersController {
             for(String nickname : miners.keySet()){
                 Miner miner = miners.get(nickname);
 
+                List<String> filter = new ArrayList<>();
+
+                for(Material material : miner.getAutoSellFilter()){
+                    filter.add(material.name());
+                }
+
                 configuration.set("players." + nickname + ".blocksMined", miner.getMinedBlocks());
                 configuration.set("players." + nickname + ".autoSell", miner.isAutoSell());
+                configuration.set("players." + nickname + ".autoSellFilter", filter);
             }
 
             ConfigUtils.save(configuration, "players.yml");
@@ -175,9 +244,11 @@ public class MinersController {
                 statement.setString(1, nickname);
                 statement.setLong(2, miner.getMinedBlocks());
                 statement.setBoolean(3, miner.isAutoSell());
+                statement.setString(4, Controllers.getSellingController().listToString(miner.getAutoSellFilter()));
                 //Update
-                statement.setLong(4, miner.getMinedBlocks());
-                statement.setBoolean(5, miner.isAutoSell());
+                statement.setLong(5, miner.getMinedBlocks());
+                statement.setBoolean(6, miner.isAutoSell());
+                statement.setString(7,Controllers.getSellingController().listToString(miner.getAutoSellFilter()));
 
                 statement.execute();
 
@@ -191,8 +262,15 @@ public class MinersController {
 
             Miner miner = miners.get(nickname);
 
+            List<String> filter = new ArrayList<>();
+
+            for(Material material : miner.getAutoSellFilter()){
+                filter.add(material.name());
+            }
+
             configuration.set("players." + nickname + ".blocksMined", miner.getMinedBlocks());
             configuration.set("players." + nickname + ".autoSell", miner.isAutoSell());
+            configuration.set("players." + nickname + ".autoSellFilter", filter);
 
             ConfigUtils.save(configuration, "players.yml");
         }
