@@ -1,5 +1,6 @@
 package pl.pijok.autosell.listeners;
 
+import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -15,11 +16,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import pl.pijok.autosell.AutoSell;
 import pl.pijok.autosell.Controllers;
-import pl.pijok.autosell.Storage;
 import pl.pijok.autosell.essentials.ChatUtils;
-import pl.pijok.autosell.essentials.Debug;
 import pl.pijok.autosell.essentials.Utils;
+import pl.pijok.autosell.hooks.MinepacksHook;
 import pl.pijok.autosell.miner.Miner;
 import pl.pijok.autosell.miner.MinersController;
 import pl.pijok.autosell.miner.Range;
@@ -79,11 +80,23 @@ public class BlockBreakListener implements Listener {
 
     private void handleDropToInventory(BlockBreakEvent event, Player player) {
         if(Settings.isDropToInventory()){
-            player.getInventory().addItem(createDrop(player, event.getBlock()));
+            ItemStack drop = createDrop(player, event.getBlock());
+            player.getInventory().addItem(drop);
             event.setDropItems(false);
 
             //Checks for full inventory
             if(event.getPlayer().getInventory().firstEmpty() == -1){
+
+                if(MinepacksHook.isEnabled()){
+                    Backpack backpack = MinepacksHook.getMinepacksPlugin().getBackpackCachedOnly(player);
+                    if(backpack != null){
+                        if(backpack.getInventory().firstEmpty() != -1){
+                            //backpack.getInventory().addItem(drop);
+                            return;
+                        }
+                    }
+                }
+
                 boolean sendWarning = true;
                 if(fullInventoryWarnings.containsKey(player)){
                     if(System.currentTimeMillis() - fullInventoryWarnings.get(player) < 5000){

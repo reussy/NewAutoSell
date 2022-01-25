@@ -49,10 +49,10 @@ public class AutoSellCommand implements CommandExecutor {
                     ChatUtils.sendMessage(player, Lang.getText("PERMISSION_DENIED"));
                     return true;
                 }
-            }
 
-            Controllers.getSellingController().openFilterGui(player);
-            return true;
+                Controllers.getSellingController().openFilterGui(player);
+                return true;
+            }
         }
 
         ChatUtils.sendMessage(player, "&7/" + label);

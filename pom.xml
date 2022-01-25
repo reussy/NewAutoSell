@@ -6,7 +6,7 @@
 
     <groupId>pl.pijok</groupId>
     <artifactId>NewAutoSell</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -46,6 +46,13 @@
         <repository>
             <id>repo</id>
             <url>https://repo.mattstudios.me/artifactory/public/</url>
+        </repository>
+
+        <!-- Minepacks API -->
+
+        <repository>
+            <id>pcgf-repo</id>
+            <url>https://repo.pcgamingfreaks.at/repository/maven-everything</url>
         </repository>
 
         <!-- SQL DRIVERS -->
@@ -102,6 +109,15 @@
             <groupId>dev.triumphteam</groupId>
             <artifactId>triumph-gui</artifactId>
             <version>3.0.5</version> <!-- replace version here -->
+        </dependency>
+
+        <!-- MinePacks API -->
+
+        <dependency>
+            <groupId>at.pcgamingfreaks</groupId>
+            <artifactId>Minepacks-API</artifactId>
+            <version>2.4.3</version><!-- Check api-version shield for newest version -->
+            <scope>provided</scope>
         </dependency>
 
         <!-- SQL DRIVERS -->

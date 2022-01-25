@@ -1,5 +1,6 @@
 package pl.pijok.autosell.selling;
 
+import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
@@ -15,6 +16,7 @@ import pl.pijok.autosell.essentials.ChatUtils;
 import pl.pijok.autosell.essentials.ConfigUtils;
 import pl.pijok.autosell.essentials.Debug;
 import pl.pijok.autosell.essentials.Utils;
+import pl.pijok.autosell.hooks.MinepacksHook;
 import pl.pijok.autosell.miner.Miner;
 import pl.pijok.autosell.settings.Lang;
 import pl.pijok.autosell.settings.Settings;
@@ -98,6 +100,7 @@ public class SellingController {
         double value = 0;
 
         List<ItemStack> toRemove = new ArrayList<>();
+        List<ItemStack> toRemoveFromBackpack = new ArrayList<>();
 
         for(ItemStack itemStack : player.getInventory().getContents()){
             if(itemStack == null || itemStack.getType().equals(Material.AIR)){
@@ -110,6 +113,22 @@ public class SellingController {
             }
         }
 
+        if(MinepacksHook.isEnabled() && MinepacksHook.isSellFromBackpack()){
+            Backpack backpack = MinepacksHook.getMinepacksPlugin().getBackpackCachedOnly(player);
+            if(backpack != null){
+                for(ItemStack itemStack : backpack.getInventory().getContents()){
+                    if(itemStack == null || itemStack.getType().equals(Material.AIR)){
+                        continue;
+                    }
+
+                    if(blocksValues.containsKey(itemStack.getType())){
+                        value += blocksValues.get(itemStack.getType()) * itemStack.getAmount();
+                        toRemoveFromBackpack.add(itemStack);
+                    }
+                }
+            }
+        }
+
         if(value == 0){
             ChatUtils.sendMessage(player, Lang.getText("NOTHING_TO_SELL"));
             return;
@@ -119,6 +138,17 @@ public class SellingController {
 
         for(ItemStack itemStack : toRemove){
             player.getInventory().remove(itemStack);
+        }
+
+        if(MinepacksHook.isEnabled()){
+            if(MinepacksHook.isSellFromBackpack()){
+                Backpack backpack = MinepacksHook.getMinepacksPlugin().getBackpackCachedOnly(player);
+                if(backpack != null){
+                    for(ItemStack itemStack : toRemoveFromBackpack){
+                        backpack.getInventory().remove(itemStack);
+                    }
+                }
+            }
         }
 
         String message = Lang.getText("SOLD_INVENTORY").replace("%value%", "" + value);

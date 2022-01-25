@@ -7,6 +7,7 @@ import pl.pijok.autosell.database.DatabaseManager;
 import pl.pijok.autosell.essentials.ConfigUtils;
 import pl.pijok.autosell.essentials.Debug;
 import pl.pijok.autosell.essentials.Utils;
+import pl.pijok.autosell.hooks.MinepacksHook;
 import pl.pijok.autosell.miner.Range;
 
 import java.sql.SQLException;
@@ -127,6 +128,9 @@ public class Settings {
 
             oreDrops.put(Material.valueOf(materialName), Material.valueOf(resultName));
         }
+
+        //Minepack settings
+        MinepacksHook.setSellFromBackpack(configuration.getBoolean("minepacks.sellFromBackpack"));
 
     }
 

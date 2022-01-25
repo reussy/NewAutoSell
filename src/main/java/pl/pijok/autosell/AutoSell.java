@@ -1,11 +1,13 @@
 package pl.pijok.autosell;
 
+import at.pcgamingfreaks.Minepacks.Bukkit.API.MinepacksPlugin;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.pijok.autosell.essentials.ConfigUtils;
 import pl.pijok.autosell.essentials.Debug;
+import pl.pijok.autosell.hooks.Hooks;
 import pl.pijok.autosell.settings.Lang;
 import pl.pijok.autosell.settings.Settings;
 
@@ -26,32 +28,25 @@ public class AutoSell extends JavaPlugin {
         Debug.setPrefix("[AutoSell] ");
         ConfigUtils.setPlugin(this);
 
-        if (!setupEconomy()){
-            Debug.log(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-
         if(!loadStuff(false)){
             Debug.sendError("Something went wrong while loading plugin " + getDescription().getName() + "! Disabling...");
             getServer().getPluginManager().disablePlugin(this);
+            return;
         }
         else{
             Debug.log("&aEverything loaded!");
             Debug.log("&aHave a nice day :D");
         }
 
+        if (!setupEconomy()){
+            Debug.log(String.format("[%s] - Disabled due to no Vault dependency found or no valid economy plugin!", getDescription().getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
             new Placeholders(this).register();
             Debug.log("&aHooked into PlaceholderAPI!");
-        }
-
-        if(Bukkit.getPluginManager().getPlugin("WorldGuard") != null){
-            Debug.log("&aDetected world guard! Hooking!");
-            Storage.detectedWorldGuard = true;
-        }
-        else{
-            Storage.detectedWorldGuard = false;
         }
 
         metrics = new Metrics(this, pluginID);
@@ -86,6 +81,8 @@ public class AutoSell extends JavaPlugin {
                 Controllers.create(this);
                 Listeners.register(this);
                 Commands.register(this);
+
+                Hooks.create();
             }
 
             Settings.load();
