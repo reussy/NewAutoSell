@@ -36,12 +36,15 @@ ignoreWorldGuard: false
 #Drop to inventory
 dropToInventory: true
 
+#Where drop to inventory should be enabled
+dropToInventoryWorlds:
+  - exampleWorld
+
 miningTools:
   - WOODEN_PICKAXE
   - STONE_PICKAXE
   - IRON_PICKAXE
   - DIAMOND_PICKAXE
-
 
 #What ores should dropped when mined with autosell or dropToInventory enabled
 oreDrops:

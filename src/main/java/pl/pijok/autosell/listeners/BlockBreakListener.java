@@ -80,34 +80,36 @@ public class BlockBreakListener implements Listener {
 
     private void handleDropToInventory(BlockBreakEvent event, Player player) {
         if(Settings.isDropToInventory()){
-            ItemStack drop = createDrop(player, event.getBlock());
-            player.getInventory().addItem(drop);
-            event.setDropItems(false);
+            if(Settings.getDropToInventoryWorlds().contains(player.getWorld().getName())){
+                ItemStack drop = createDrop(player, event.getBlock());
+                player.getInventory().addItem(drop);
+                event.setDropItems(false);
 
-            //Checks for full inventory
-            if(event.getPlayer().getInventory().firstEmpty() == -1){
+                //Checks for full inventory
+                if(event.getPlayer().getInventory().firstEmpty() == -1){
 
-                if(MinepacksHook.isEnabled()){
-                    Backpack backpack = MinepacksHook.getMinepacksPlugin().getBackpackCachedOnly(player);
-                    if(backpack != null){
-                        if(backpack.getInventory().firstEmpty() != -1){
-                            //backpack.getInventory().addItem(drop);
-                            return;
+                    if(MinepacksHook.isEnabled()){
+                        Backpack backpack = MinepacksHook.getMinepacksPlugin().getBackpackCachedOnly(player);
+                        if(backpack != null){
+                            if(backpack.getInventory().firstEmpty() != -1){
+                                //backpack.getInventory().addItem(drop);
+                                return;
+                            }
                         }
                     }
-                }
 
-                boolean sendWarning = true;
-                if(fullInventoryWarnings.containsKey(player)){
-                    if(System.currentTimeMillis() - fullInventoryWarnings.get(player) < 5000){
-                        sendWarning = false;
+                    boolean sendWarning = true;
+                    if(fullInventoryWarnings.containsKey(player)){
+                        if(System.currentTimeMillis() - fullInventoryWarnings.get(player) < 5000){
+                            sendWarning = false;
+                        }
                     }
-                }
 
-                if(sendWarning){
-                    ChatUtils.sendMessage(player, Lang.getText("FULL_INVENTORY"));
-                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 5, 5);
-                    fullInventoryWarnings.put(player, System.currentTimeMillis());
+                    if(sendWarning){
+                        ChatUtils.sendMessage(player, Lang.getText("FULL_INVENTORY"));
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 5, 5);
+                        fullInventoryWarnings.put(player, System.currentTimeMillis());
+                    }
                 }
             }
         }

@@ -15,7 +15,7 @@ filler:
 bottomFiller:
   name: ""
   amount: 1
-  material: BLACK_STAINED_GLASS_PANE
+  material: GRAY_STAINED_GLASS_PANE
 
 toSell: "&a&lSell"
 toIgnore: "&c&lIgnore"

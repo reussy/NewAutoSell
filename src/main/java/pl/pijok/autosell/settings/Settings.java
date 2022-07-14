@@ -34,6 +34,7 @@ public class Settings {
     //Mining settings
     private static boolean ignoreWorldGuard;
     private static boolean dropToInventory;
+    private static List<String> dropToInventoryWorlds;
     private static HashMap<Integer, Range> fortuneDrops;
     private static HashMap<Material, Material> oreDrops;
 
@@ -99,10 +100,8 @@ public class Settings {
 
         ignoreWorldGuard = configuration.getBoolean("ignoreWorldGuard");
 
-        //boosterOnlyOnline = configuration.getBoolean("boosterOnlyOnline");
-        //newBoosterAction = configuration.getString("newBoosterAction");
-
         dropToInventory = configuration.getBoolean("dropToInventory");
+        dropToInventoryWorlds = configuration.getStringList("dropToInventoryWorlds");
 
         fortuneDrops = new HashMap<>();
         for(String fortuneLevel : configuration.getConfigurationSection("fortuneDrops").getKeys(false)){
@@ -228,5 +227,9 @@ public class Settings {
 
     public static HashMap<Material, Material> getOreDrops() {
         return oreDrops;
+    }
+
+    public static List<String> getDropToInventoryWorlds() {
+        return dropToInventoryWorlds;
     }
 }
