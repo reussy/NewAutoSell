@@ -2,7 +2,6 @@
 Plugin for automatically selling and counting mined blocks
 
 # Commands
- - **/autosell** - Used to enable or disable autosell function
  - **/autosell** - Enable and disable autosell function
  - **/autosell** filter - Filter what you want to sell
  - **/sellall** - Sell whole inventory
