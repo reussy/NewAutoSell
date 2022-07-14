@@ -15,7 +15,7 @@ Plugin for automatically selling and counting mined blocks
  - **autosell.filter** - Permission to use /autosell filter command
 
 # Placeholders
- - **%autosell_blocksMined%&& - Get blocks mined by player
+ - **%autosell_blocksMined%** - Get blocks mined by player
 
 # Configuration files
 *All configs given here are for version 1.13 - 1.18*
