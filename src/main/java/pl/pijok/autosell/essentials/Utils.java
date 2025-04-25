@@ -3,6 +3,11 @@ package pl.pijok.autosell.essentials;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class Utils {
 
@@ -30,6 +35,11 @@ public class Utils {
         int multiplier = (int) Math.pow(10, precision);
         value = (double) ((int) (value * multiplier)) / multiplier;
         return value;
+    }
+
+    @Contract(pure = true)
+    public static @NotNull BigDecimal round(@NotNull BigDecimal value, int precision) {
+        return value.setScale(precision, RoundingMode.HALF_UP);
     }
 
     public static String formatTime(long duration){

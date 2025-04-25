@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import pl.pijok.autosell.AutoSell;
 import pl.pijok.autosell.Controllers;
 import pl.pijok.autosell.essentials.ChatUtils;
@@ -42,7 +43,7 @@ public class BlockBreakListener implements Listener {
     }
 
     @EventHandler
-    public void onBreak(BlockBreakEvent event){
+    public void onBreak(@NotNull BlockBreakEvent event){
 
         Player player = event.getPlayer();
 
@@ -63,7 +64,7 @@ public class BlockBreakListener implements Listener {
 
         Miner miner = minersController.getMiner(player);
 
-        if(miner.isAutoSell()){
+        if (miner.isAutoSell()){
             ItemStack itemStack = createDrop(player, event.getBlock());
             if(miner.getAutoSellFilter().contains(itemStack.getType())){
                 if(sellingController.isSellableItem(itemStack.getType())){

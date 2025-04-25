@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import pl.pijok.autosell.AutoSell;
 import pl.pijok.autosell.Controllers;
 import pl.pijok.autosell.essentials.ChatUtils;
@@ -21,6 +22,8 @@ import pl.pijok.autosell.miner.Miner;
 import pl.pijok.autosell.settings.Lang;
 import pl.pijok.autosell.settings.Settings;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -30,9 +33,9 @@ public class SellingController {
 
     private final AutoSell plugin;
 
-    private HashMap<Material, Double> blocksValues;
-    private LinkedHashMap<String, Double> multipliers;
-    private List<Material> sellableMaterials;
+    private final HashMap<Material, Double> blocksValues;
+    private final LinkedHashMap<String, Double> multipliers;
+    private final List<Material> sellableMaterials;
 
     //Filter gui settings
     private String title;
@@ -96,8 +99,8 @@ public class SellingController {
 
     }
 
-    public void sellPlayerInventory(Player player){
-        double value = 0;
+    public void sellPlayerInventory(@NotNull Player player){
+        BigDecimal value = BigDecimal.ZERO;
 
         List<ItemStack> toRemove = new ArrayList<>();
         List<ItemStack> toRemoveFromBackpack = new ArrayList<>();
@@ -108,7 +111,9 @@ public class SellingController {
             }
 
             if(blocksValues.containsKey(itemStack.getType())){
-                value += blocksValues.get(itemStack.getType()) * itemStack.getAmount();
+                BigDecimal itemValue = BigDecimal.valueOf(blocksValues.get(itemStack.getType()))
+                        .multiply(BigDecimal.valueOf(itemStack.getAmount()));
+                value = value.add(itemValue);
                 toRemove.add(itemStack);
             }
         }
@@ -122,14 +127,16 @@ public class SellingController {
                     }
 
                     if(blocksValues.containsKey(itemStack.getType())){
-                        value += blocksValues.get(itemStack.getType()) * itemStack.getAmount();
+                        BigDecimal itemValue = BigDecimal.valueOf(blocksValues.get(itemStack.getType()))
+                                .multiply(BigDecimal.valueOf(itemStack.getAmount()));
+                        value = value.add(itemValue);
                         toRemoveFromBackpack.add(itemStack);
                     }
                 }
             }
         }
 
-        if(value == 0){
+        if(value.equals(BigDecimal.ZERO)){
             ChatUtils.sendMessage(player, Lang.getText("NOTHING_TO_SELL"));
             return;
         }
@@ -151,31 +158,46 @@ public class SellingController {
             }
         }
 
-        String message = Lang.getText("SOLD_INVENTORY").replace("%value%", "" + value);
+        String message = Lang.getText("SOLD_INVENTORY").replace("%value%", formatMoney(value));
         ChatUtils.sendMessage(player, message);
-        AutoSell.getEconomy().depositPlayer(player, value);
+        AutoSell.getEconomy().depositPlayer(player, value.doubleValue());
     }
 
-    public void sellSingleItem(Player player, ItemStack itemStack){
+    public void sellSingleItem(Player player, @NotNull ItemStack itemStack){
         if(!blocksValues.containsKey(itemStack.getType())){
             return;
         }
 
-        double value = blocksValues.get(itemStack.getType()) * itemStack.getAmount();
+        BigDecimal value = BigDecimal.valueOf(blocksValues.get(itemStack.getType()) * itemStack.getAmount());
 
         value = Utils.round(countMultiplier(player, value),2);
 
-        AutoSell.getEconomy().depositPlayer(player, value);
+        AutoSell.getEconomy().depositPlayer(player, value.doubleValue());
     }
 
-    private double countMultiplier(Player player, double value){
+    private BigDecimal countMultiplier(Player player, BigDecimal value){
         for(String permission : multipliers.keySet()){
             if(player.hasPermission(permission)){
-                value = value * multipliers.get(permission);
-                return value;
+                double multiplier = multipliers.get(permission);
+                return value.multiply(BigDecimal.valueOf(multiplier));
             }
         }
         return value;
+    }
+
+    public static @NotNull String formatMoney(BigDecimal value) {
+        value = value.setScale(2, RoundingMode.HALF_UP);
+
+        String[] suffixes = {"", "k", "M", "B", "T", "Q", "Qi", "Sx", "Sp", "Oc", "No", "Dc"};
+        BigDecimal thousand = new BigDecimal("1000");
+        int index = 0;
+
+        while (value.compareTo(thousand) >= 0 && index < suffixes.length - 1) {
+            value = value.divide(thousand, 2, RoundingMode.HALF_UP);
+            index++;
+        }
+
+        return value.toPlainString() + suffixes[index];
     }
 
     public void openFilterGui(Player player){
@@ -228,7 +250,6 @@ public class SellingController {
                 }
 
                 openFilterGui((Player) inventoryClickEvent.getWhoClicked());
-
             }));
         }
 
@@ -247,17 +268,17 @@ public class SellingController {
         return toSell;
     }
 
-    public String listToString(List<Material> materials){
-        String a = materials.get(0).name();
+    public String listToString(@NotNull List<Material> materials){
+        StringBuilder a = new StringBuilder(materials.get(0).name());
         if(materials.size() > 1){
             for(int i = 1; i < materials.size(); i++){
-                a = a + ":" + materials.get(i).name();
+                a.append(":").append(materials.get(i).name());
             }
         }
-        return a;
+        return a.toString();
     }
 
-    public List<Material> stringToList(String a){
+    public List<Material> stringToList(@NotNull String a){
         String[] parts = a.split(":");
         List<Material> materials = new ArrayList<>();
         for(String part : parts){

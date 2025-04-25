@@ -1,6 +1,5 @@
 package pl.pijok.autosell;
 
-import at.pcgamingfreaks.Minepacks.Bukkit.API.MinepacksPlugin;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -15,9 +14,6 @@ public class AutoSell extends JavaPlugin {
 
     private static Economy economy;
 
-    //bStats
-    private final int pluginID = 13757;
-    private Metrics metrics;
 
     //Update checker
     private final int spigotID = 98930;
@@ -48,19 +44,6 @@ public class AutoSell extends JavaPlugin {
             new Placeholders(this).register();
             Debug.log("&aHooked into PlaceholderAPI!");
         }
-
-        metrics = new Metrics(this, pluginID);
-
-        new UpdateChecker(this, spigotID).getVersion(version -> {
-            if (this.getDescription().getVersion().equals(version)) {
-                Debug.log("&aYour version is up-to-date!");
-            } else {
-                Debug.log("&cThere is new update!");
-                Debug.log("&cCheck https://www.spigotmc.org/resources/pijoks-new-autosell.98930/");
-            }
-        });
-
-        Debug.log("&aThank you for your support!");
     }
 
     @Override
