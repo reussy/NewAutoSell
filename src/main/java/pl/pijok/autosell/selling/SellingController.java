@@ -208,18 +208,16 @@ public class SellingController {
                 .rows(6)
                 .create();
 
-        gui.setDefaultClickAction(inventoryClickEvent -> {
-            inventoryClickEvent.setCancelled(true);
-        });
+        gui.setDefaultClickAction(inventoryClickEvent -> inventoryClickEvent.setCancelled(true));
 
-        GuiItem guiFiller = ItemBuilder.from(filler).asGuiItem();
+        //GuiItem guiFiller = ItemBuilder.from(filler).asGuiItem();
         GuiItem bottomGuiFiller = ItemBuilder.from(bottomFiller).asGuiItem();
 
         for(int i = 0; i <= 44; i++){
             if(slotsToUse.contains(i)){
                 continue;
             }
-            gui.setItem(i, guiFiller);
+            //gui.setItem(i, guiFiller);
         }
 
         for(int i = 45; i <= 53; i++){
